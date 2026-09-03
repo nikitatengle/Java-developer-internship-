@@ -1,0 +1,151 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class notesapp {
+
+    // Name of the file where notes will be stored
+    private static final String FILE_NAME = "notes.txt";
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        int choice;
+
+        System.out.println("=================================");
+        System.out.println("        JAVA NOTES MANAGER");
+        System.out.println("=================================");
+
+        while (true) {
+
+            System.out.println("\n--------- MENU ---------");
+            System.out.println("1. Write New Note");
+            System.out.println("2. View Notes");
+            System.out.println("3. Add Note");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+
+            // Check if user entered a number
+            if (sc.hasNextInt()) {
+                choice = sc.nextInt();
+                sc.nextLine(); // Consume leftover newline
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine();
+                continue;
+            }
+
+            switch (choice) {
+
+                case 1:
+                    writeNewNote(sc);
+                    break;
+
+                case 2:
+                    readNotes();
+                    break;
+
+                case 3:
+                    addNote(sc);
+                    break;
+
+                case 4:
+                    System.out.println("\nThank you for using Notes Manager!");
+                    System.out.println("Exiting program...");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please select 1-4.");
+            }
+        }
+    }
+
+    // Method to write a new note
+    public static void writeNewNote(Scanner sc) {
+
+        System.out.println("\n--------- WRITE NEW NOTE ---------");
+        System.out.print("Enter your note: ");
+
+        String note = sc.nextLine();
+
+        try {
+            // FileWriter without true will overwrite the existing file
+            FileWriter writer = new FileWriter(FILE_NAME);
+
+            writer.write(note);
+            writer.write(System.lineSeparator());
+
+            writer.close();
+
+            System.out.println("Note saved successfully!");
+
+        } catch (IOException e) {
+
+            System.out.println("Error while writing the note.");
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    // Method to read all notes
+    public static void readNotes() {
+
+        System.out.println("\n--------- YOUR NOTES ---------");
+
+        try {
+
+            FileReader reader = new FileReader(FILE_NAME);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            String line;
+            boolean hasNotes = false;
+
+            while ((line = bufferedReader.readLine()) != null) {
+
+                System.out.println(line);
+                hasNotes = true;
+            }
+
+            bufferedReader.close();
+            reader.close();
+
+            if (!hasNotes) {
+                System.out.println("No notes found.");
+            }
+
+        } catch (IOException e) {
+
+            System.out.println("No notes found. Please create a note first.");
+        }
+    }
+
+    // Method to add a note without deleting existing notes
+    public static void addNote(Scanner sc) {
+
+        System.out.println("\n--------- ADD NOTE ---------");
+        System.out.print("Enter your note: ");
+
+        String note = sc.nextLine();
+
+        try {
+
+            // true means append mode
+            // Existing notes will not be deleted
+            FileWriter writer = new FileWriter(FILE_NAME, true);
+
+            writer.write(note);
+            writer.write(System.lineSeparator());
+
+            writer.close();
+
+            System.out.println("Note added successfully!");
+
+        } catch (IOException e) {
+
+            System.out.println("Error while adding the note.");
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
